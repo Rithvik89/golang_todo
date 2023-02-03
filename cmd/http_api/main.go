@@ -4,11 +4,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"gorm.io/gorm"
 )
 
 type App struct {
 	srv    *http.Server
 	logger *log.Logger
+	db     *gorm.DB
 }
 
 // profileManager, TodoManager, AuthManager.
@@ -23,6 +26,7 @@ func main() {
 		logger: l,
 	}
 
+	initDB(app)
 	initServer(app)
 
 	app.logger.Println("app is running on ", app.srv.Addr)
