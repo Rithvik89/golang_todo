@@ -2,7 +2,9 @@ package main
 
 import (
 	"golang_start/entities"
+	authmanager "golang_start/internal/auth_manager"
 	"golang_start/pkg/app_config"
+	kvstore "golang_start/pkg/kv_store"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -17,7 +19,7 @@ func initServer(app *App) {
 		Addr:    app_config.Data.MustString("SERVER_ADDR"),
 		Handler: r,
 	}
-
+	initHandler(app, r)
 	app.srv = &srv
 
 }
@@ -34,4 +36,8 @@ func initDB(app *App) {
 	// schema migration ..
 	(app.db).AutoMigrate(&entities.Users{})
 
+}
+
+func initManagers(app *App) {
+	app.auth_manager = authmanager.New(kvstore.New(), app.db)
 }
